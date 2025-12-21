@@ -19,6 +19,7 @@ How to retreive command from terminal:
 // OnSubmit Prefix
 string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
 string command = text.ToLower();
+KroesTerminal.Log.LogInfo($"OnSubmitPrefix: {command}");
 ```
 TerminalNode example:
 ```cs
@@ -70,6 +71,36 @@ KroesTerminal.Log.LogInfo($"(bool) persistentImage: {node.persistentImage}");
 [Info   :KroesTerminal] (int) playSyncedClip: -1
 [Info   :KroesTerminal] (bool) loadImageSlowly: False
 [Info   :KroesTerminal] (bool) persistentImage: False
+```
+Create custom TerminalNode:
+```cs
+internal static TerminalNode CreateTerminalNode(string name)
+{
+    TerminalNode node = ScriptableObject.CreateInstance<TerminalNode>();
+    node.displayText = $"[{name}]";
+    node.terminalEvent = "";
+    node.clearPreviousText = true;
+    node.maxCharactersToType = 35;
+    node.buyItemIndex = -1;
+    node.buyVehicleIndex = -1;
+    node.isConfirmationNode = false;
+    node.buyRerouteToMoon = -1;
+    node.displayPlanetInfo = -1;
+    node.shipUnlockableID = -1;
+    node.buyUnlockable = false;
+    node.returnFromStorage = false;
+    node.itemCost = 0;
+    node.creatureFileID = -1;
+    node.creatureName = "";
+    node.storyLogFileID = -1;
+    node.overrideOptions = false;
+    node.acceptAnything = false;
+    node.terminalOptions = Array.Empty<CompatibleNoun>();
+    node.playSyncedClip = -1;
+    node.loadImageSlowly = false;
+    node.persistentImage = false;
+    return node;
+}
 ```
 
 # TextPostProcess.cs
