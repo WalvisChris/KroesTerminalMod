@@ -218,6 +218,47 @@ private string TextPostProcess(string modifiedDisplayText, TerminalNode node)
 }
 
 ```
+# LoadNewNode.cs
+```cs
+public void LoadNewNode(TerminalNode node)
+{
+    this.modifyingText = true;
+    this.RunTerminalEvents(node);
+    this.screenText.interactable = true;
+    string text = "";
+    if (node.clearPreviousText)
+    {
+        text = "\n\n\n" + node.displayText.ToString();
+    }
+    else
+    {
+        text = "\n\n" + this.screenText.text.ToString() + "\n\n" + node.displayText.ToString();
+        int value = text.Length - 250;
+        text = text.Substring(Mathf.Clamp(value, 0, text.Length)).ToString();
+    }
+    try
+    {
+        text = this.TextPostProcess(text, node);
+    }
+    catch (Exception arg)
+    {
+        Debug.LogError(string.Format("An error occured while post processing terminal text: {0}", arg));
+    }
+    this.screenText.text = text;
+    this.currentText = this.screenText.text;
+    this.textAdded = 0;
+    if (node.playSyncedClip != -1)
+    {
+        this.PlayTerminalAudioServerRpc(node.playSyncedClip);
+    }
+    else if (node.playClip != null)
+    {
+        this.terminalAudio.PlayOneShot(node.playClip);
+    }
+    this.LoadTerminalImage(node);
+    this.currentNode = node;
+}
+```
 
 # OnSubmit.cs
 ```cs
