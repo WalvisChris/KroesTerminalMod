@@ -14,12 +14,62 @@ return this.terminalNodes.specialNodes[...];
 ```cs
 text = this.TextPostProcess(text, node);
 ```
-
 How to retreive command from terminal:
 ```cs
 // OnSubmit Prefix
 string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
 string command = text.ToLower();
+```
+TerminalNode example:
+```cs
+// LoadNewNode Prefix
+KroesTerminal.Log.LogInfo($"(string) displayText: {node.displayText}");
+KroesTerminal.Log.LogInfo($"(string) terminalEvent: {node.terminalEvent}");
+KroesTerminal.Log.LogInfo($"(bool) clearPreviousText: {node.clearPreviousText}");
+KroesTerminal.Log.LogInfo($"(int) maxCharactersToType: {node.maxCharactersToType}");
+KroesTerminal.Log.LogInfo($"(int) buyItemIndex: {node.buyItemIndex}");
+KroesTerminal.Log.LogInfo($"(int) buyVehicleIndex: {node.buyVehicleIndex}");
+KroesTerminal.Log.LogInfo($"(bool) isConfirmationNode: {node.isConfirmationNode}");
+KroesTerminal.Log.LogInfo($"(int) buyRerouteToMoon: {node.buyRerouteToMoon}");
+KroesTerminal.Log.LogInfo($"(int) displayPlanetInfo: {node.displayPlanetInfo}");
+KroesTerminal.Log.LogInfo($"(int) shipUnlockableID: {node.shipUnlockableID}");
+KroesTerminal.Log.LogInfo($"(bool) buyUnlockable: {node.buyUnlockable}");
+KroesTerminal.Log.LogInfo($"(bool) returnFromStorage: {node.returnFromStorage}");
+KroesTerminal.Log.LogInfo($"(int) itemCost: {node.itemCost}");
+KroesTerminal.Log.LogInfo($"(int) creatureFileID: {node.creatureFileID}");
+KroesTerminal.Log.LogInfo($"(string) creatureName: {node.creatureName}");
+KroesTerminal.Log.LogInfo($"(int) storyLogFileID: {node.storyLogFileID}");
+KroesTerminal.Log.LogInfo($"(bool) overrideOptions: {node.overrideOptions}");
+KroesTerminal.Log.LogInfo($"(bool) acceptAnything: {node.acceptAnything}");
+KroesTerminal.Log.LogInfo($"(CompatibleNoun[]) terminalOptions: {(node.terminalOptions == null ? "null" : node.terminalOptions.Length.ToString())}");
+KroesTerminal.Log.LogInfo($"(int) playSyncedClip: {node.playSyncedClip}");
+KroesTerminal.Log.LogInfo($"(bool) loadImageSlowly: {node.loadImageSlowly}");
+KroesTerminal.Log.LogInfo($"(bool) persistentImage: {node.persistentImage}");
+
+// Output
+[Info   :KroesTerminal] OnSubmitPrefix: scan
+[Info   :KroesTerminal] (string) displayText: [scanForItems]
+[Info   :KroesTerminal] (string) terminalEvent:
+[Info   :KroesTerminal] (bool) clearPreviousText: True
+[Info   :KroesTerminal] (int) maxCharactersToType: 35
+[Info   :KroesTerminal] (int) buyItemIndex: -1
+[Info   :KroesTerminal] (int) buyVehicleIndex: -1
+[Info   :KroesTerminal] (bool) isConfirmationNode: False
+[Info   :KroesTerminal] (int) buyRerouteToMoon: -1
+[Info   :KroesTerminal] (int) displayPlanetInfo: -1
+[Info   :KroesTerminal] (int) shipUnlockableID: -1
+[Info   :KroesTerminal] (bool) buyUnlockable: False
+[Info   :KroesTerminal] (bool) returnFromStorage: False
+[Info   :KroesTerminal] (int) itemCost: 0
+[Info   :KroesTerminal] (int) creatureFileID: -1
+[Info   :KroesTerminal] (string) creatureName:
+[Info   :KroesTerminal] (int) storyLogFileID: -1
+[Info   :KroesTerminal] (bool) overrideOptions: False
+[Info   :KroesTerminal] (bool) acceptAnything: False
+[Info   :KroesTerminal] (CompatibleNoun[]) terminalOptions: 1
+[Info   :KroesTerminal] (int) playSyncedClip: -1
+[Info   :KroesTerminal] (bool) loadImageSlowly: False
+[Info   :KroesTerminal] (bool) persistentImage: False
 ```
 
 # TextPostProcess.cs
