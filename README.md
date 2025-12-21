@@ -1,13 +1,25 @@
 # Terminal workflow
-user input is stored in Terminal.screenText (TMPro) (OnSubmit Prefix):
+user input is stored in Terminal.screenText (TMPro):
 ```cs
+// Create node from input
+TerminalNode terminalNode = this.ParsePlayerSentence();
+// next step
+this.LoadNewNode(terminalNode);
+```
+`ParsePlayerSentence` returns a TerminalNode:
+```cs
+return this.terminalNodes.specialNodes[...];
+```
+`LoadNewNode` sets the final screen text using `TextPostProcess`:
+```cs
+text = this.TextPostProcess(text, node);
+```
+
+How to retreive command from terminal:
+```cs
+// OnSubmit Prefix
 string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
 string command = text.ToLower();
-```
-Terminal.screenText is set by `OnGamepadTextInputDismissed_t` ():
-```cs
-this.screenText.text = this.screenText.text + this.textAdded.ToString();
-this.OnSubmit();
 ```
 
 # TextPostProcess.cs
@@ -400,5 +412,192 @@ public class TerminalNode : ScriptableObject
 	public bool loadImageSlowly;
 
 	public bool persistentImage;
+}
+```
+# ParsePlayerSentence.cs
+```cs
+private TerminalNode ParsePlayerSentence()
+{
+    this.broadcastedCodeThisFrame = false;
+    string text = this.screenText.text.Substring(this.screenText.text.Length - this.textAdded);
+    text = this.RemovePunctuation(text);
+    string[] array = text.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+    if (this.currentNode != null && this.currentNode.overrideOptions)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            TerminalNode terminalNode = this.ParseWordOverrideOptions(array[i], this.currentNode.terminalOptions);
+            if (terminalNode != null)
+            {
+                return terminalNode;
+            }
+        }
+        return null;
+    }
+    if (array.Length > 1)
+    {
+        string a = array[0];
+        if (!(a == "switch"))
+        {
+            if (!(a == "flash"))
+            {
+                if (!(a == "ping"))
+                {
+                    if (a == "transmit")
+                    {
+                        SignalTranslator signalTranslator = Object.FindObjectOfType<SignalTranslator>();
+                        if (signalTranslator != null && Time.realtimeSinceStartup - signalTranslator.timeLastUsingSignalTranslator > 8f && array.Length >= 2)
+                        {
+                            string text2 = text.Substring(8);
+                            if (!string.IsNullOrEmpty(text2))
+                            {
+                                if (!base.IsServer)
+                                {
+                                    signalTranslator.timeLastUsingSignalTranslator = Time.realtimeSinceStartup;
+                                }
+                                HUDManager.Instance.UseSignalTranslatorServerRpc(text2.Substring(0, Mathf.Min(text2.Length, 10)));
+                                return this.terminalNodes.specialNodes[22];
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    int num = this.CheckForPlayerNameCommand(array[0], array[1]);
+                    if (num != -1)
+                    {
+                        StartOfRound.Instance.mapScreen.PingRadarBooster(num);
+                        return this.terminalNodes.specialNodes[21];
+                    }
+                }
+            }
+            else
+            {
+                int num = this.CheckForPlayerNameCommand(array[0], array[1]);
+                if (num != -1)
+                {
+                    StartOfRound.Instance.mapScreen.FlashRadarBooster(num);
+                    return this.terminalNodes.specialNodes[23];
+                }
+                if (StartOfRound.Instance.mapScreen.radarTargets[StartOfRound.Instance.mapScreen.targetTransformIndex].isNonPlayer)
+                {
+                    StartOfRound.Instance.mapScreen.FlashRadarBooster(StartOfRound.Instance.mapScreen.targetTransformIndex);
+                    return this.terminalNodes.specialNodes[23];
+                }
+            }
+        }
+        else
+        {
+            int num = this.CheckForPlayerNameCommand(array[0], array[1]);
+            if (num != -1)
+            {
+                StartOfRound.Instance.mapScreen.SwitchRadarTargetAndSync(num);
+                return this.terminalNodes.specialNodes[20];
+            }
+        }
+    }
+    TerminalKeyword terminalKeyword = this.CheckForExactSentences(text);
+    if (terminalKeyword != null)
+    {
+        if (terminalKeyword.accessTerminalObjects)
+        {
+            this.CallFunctionInAccessibleTerminalObject(terminalKeyword.word);
+            this.PlayBroadcastCodeEffect();
+            return null;
+        }
+        if (terminalKeyword.specialKeywordResult != null)
+        {
+            return terminalKeyword.specialKeywordResult;
+        }
+    }
+    string value = Regex.Match(text, "\\d+").Value;
+    if (!string.IsNullOrWhiteSpace(value))
+    {
+        this.playerDefinedAmount = Mathf.Clamp(int.Parse(value), 0, 10);
+    }
+    else
+    {
+        this.playerDefinedAmount = 1;
+    }
+    if (array.Length > 5)
+    {
+        return null;
+    }
+    TerminalKeyword terminalKeyword2 = null;
+    TerminalKeyword terminalKeyword3 = null;
+    new List<TerminalKeyword>();
+    bool flag = false;
+    this.hasGottenNoun = false;
+    this.hasGottenVerb = false;
+    for (int j = 0; j < array.Length; j++)
+    {
+        terminalKeyword = this.ParseWord(array[j], 2);
+        if (terminalKeyword != null)
+        {
+            Debug.Log("Parsed word: " + array[j]);
+            if (terminalKeyword.isVerb)
+            {
+                if (this.hasGottenVerb)
+                {
+                    goto IL_3B9;
+                }
+                this.hasGottenVerb = true;
+                terminalKeyword2 = terminalKeyword;
+            }
+            else
+            {
+                if (this.hasGottenNoun)
+                {
+                    goto IL_3B9;
+                }
+                this.hasGottenNoun = true;
+                terminalKeyword3 = terminalKeyword;
+                if (terminalKeyword.accessTerminalObjects)
+                {
+                    this.broadcastedCodeThisFrame = true;
+                    this.CallFunctionInAccessibleTerminalObject(terminalKeyword.word);
+                    flag = true;
+                }
+            }
+            if (!flag && this.hasGottenNoun && this.hasGottenVerb)
+            {
+                break;
+            }
+        }
+        else
+        {
+            Debug.Log("Could not parse word: " + array[j]);
+        }
+        IL_3B9:;
+    }
+    if (this.broadcastedCodeThisFrame)
+    {
+        this.PlayBroadcastCodeEffect();
+        return this.terminalNodes.specialNodes[19];
+    }
+    this.hasGottenNoun = false;
+    this.hasGottenVerb = false;
+    if (terminalKeyword3 == null)
+    {
+        return this.terminalNodes.specialNodes[10];
+    }
+    if (terminalKeyword2 == null)
+    {
+        if (!(terminalKeyword3.defaultVerb != null))
+        {
+            return this.terminalNodes.specialNodes[11];
+        }
+        terminalKeyword2 = terminalKeyword3.defaultVerb;
+    }
+    for (int k = 0; k < terminalKeyword2.compatibleNouns.Length; k++)
+    {
+        if (terminalKeyword2.compatibleNouns[k].noun == terminalKeyword3)
+        {
+            Debug.Log(string.Format("noun keyword: {0} ; verb keyword: {1} ; result null? : {2}", terminalKeyword3.word, terminalKeyword2.word, terminalKeyword2.compatibleNouns[k].result == null));
+            Debug.Log("result: " + terminalKeyword2.compatibleNouns[k].result.name);
+            return terminalKeyword2.compatibleNouns[k].result;
+        }
+    }
+    return this.terminalNodes.specialNodes[12];
 }
 ```
