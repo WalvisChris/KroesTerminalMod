@@ -102,7 +102,6 @@ internal static TerminalNode CreateTerminalNode(string name)
     return node;
 }
 ```
-
 # TextPostProcess.cs
 ```cs
 private string TextPostProcess(string modifiedDisplayText, TerminalNode node)

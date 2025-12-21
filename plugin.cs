@@ -1,11 +1,12 @@
+using BepInEx;
+using BepInEx.Logging;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
+using UnityEngine;
 
 namespace KroesTerminal
 {
@@ -25,7 +26,5 @@ namespace KroesTerminal
             Log.LogInfo("Loaded succesfully!");
             harmony.PatchAll();
         }
-
-        public 
     }
 }
