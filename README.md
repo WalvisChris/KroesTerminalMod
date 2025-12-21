@@ -4,7 +4,11 @@ user input is stored in Terminal.screenText (TMPro) (OnSubmit Prefix):
 string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
 string command = text.ToLower();
 ```
-
+Terminal.screenText is set by `OnGamepadTextInputDismissed_t` ():
+```cs
+this.screenText.text = this.screenText.text + this.textAdded.ToString();
+this.OnSubmit();
+```
 
 # TextPostProcess.cs
 ```cs
