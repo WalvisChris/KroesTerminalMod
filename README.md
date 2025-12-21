@@ -1,4 +1,10 @@
 # Terminal workflow
+user input is stored in OnSubmit Prefix:
+```cs
+string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
+string command = text.ToLower();
+```
+
 
 # TextPostProcess.cs
 ```cs
