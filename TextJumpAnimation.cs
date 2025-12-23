@@ -14,12 +14,11 @@ namespace KroesTerminal
         private float jumpTime;
         private const float jumpDuration = 0.2f;
         private const float jumpScale = 1.5f;
-        private Vector3 originalScale;
+        private readonly Vector3 originalScale = new Vector3(1f, 1f, 1f);
 
         public void StartJump(TextMeshProUGUI target)
         {
             text = target;
-            originalScale = transform.localScale;
             jumpTime = jumpDuration;
         }
 

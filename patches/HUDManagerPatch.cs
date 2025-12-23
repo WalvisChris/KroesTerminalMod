@@ -32,14 +32,14 @@ namespace KroesTerminal.Patches
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = new Vector2(0f, 0f); // POSITION
-            rect.sizeDelta = new Vector2(200, 50); // SIZE
+            rect.anchoredPosition = new Vector2(50f, 20f); // POSITION
+            rect.sizeDelta = new Vector2(300, 50); // SIZE
             quotaText.font = __instance.controlTipLines[0].font;
             quotaText.fontSize = 20;
             quotaText.fontStyle = FontStyles.Bold;
             quotaText.text = "-placeholder-";
             quotaText.color = Color.white;
-            quotaText.alignment = TextAlignmentOptions.Center;
+            quotaText.alignment = TextAlignmentOptions.Left;
             quotaText.enableWordWrapping = true;
             quotaText.overflowMode = TextOverflowModes.Overflow;
             Utilities.QuotaText = quotaText;
