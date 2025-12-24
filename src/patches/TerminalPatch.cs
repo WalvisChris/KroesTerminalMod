@@ -39,6 +39,12 @@ namespace KroesTerminal.Patches
                 TerminalNode customNode = Utilities.CreateTerminalNode("kenemy");
                 __instance.LoadNewNode(customNode);
                 return false;
+            } else if (command == "kroes")
+            {
+                KroesTerminal.Log.LogInfo("Custom Command: kroes");
+                TerminalNode customNode = Utilities.CreateTerminalNode("kroes");
+                __instance.LoadNewNode(customNode);
+                return false;
             }
             return true;
         }
@@ -52,20 +58,53 @@ namespace KroesTerminal.Patches
 
             if (keyword.Contains("[kscan]"))
             {
+                if (!KroesTerminal.Configuration.KScan)
+                {
+                    KroesTerminal.Log.LogInfo("[kscan] not permitted.");
+                    __result = Utilities.ConfigPermissionDisplayText("kscan");
+                    Utilities.OnSubmitEnd(__instance);
+                    return false;
+                }
+
                 KroesTerminal.Log.LogInfo("Processing [kscan]...");
                 __result = Utilities.KScanDisplayText();
                 Utilities.OnSubmitEnd(__instance);
                 return false;
+
             } else if (keyword.Contains("[kitems]"))
             {
+                if (!KroesTerminal.Configuration.KItems)
+                {
+                    KroesTerminal.Log.LogInfo("[kitems] not permitted.");
+                    __result = Utilities.ConfigPermissionDisplayText("kitems");
+                    Utilities.OnSubmitEnd(__instance);
+                    return false;
+                }
+
                 KroesTerminal.Log.LogInfo("Processing [kitems]...");
                 __result = Utilities.KItemsDisplayText();
                 Utilities.OnSubmitEnd(__instance);
                 return false;
-            } else if (keyword.Contains("[kenemy"))
+
+            } else if (keyword.Contains("[kenemy]"))
             {
+                if (!KroesTerminal.Configuration.KEnemy)
+                {
+                    KroesTerminal.Log.LogInfo("[kenemy] not permitted.");
+                    __result = Utilities.ConfigPermissionDisplayText("kenemy");
+                    Utilities.OnSubmitEnd(__instance);
+                    return false;
+                }
+
                 KroesTerminal.Log.LogInfo("Processing [kenemy]...");
                 __result = Utilities.KEnemyDisplayText();
+                Utilities.OnSubmitEnd(__instance);
+                return false;
+            
+            } else if (keyword.Contains("[kroes]"))
+            {
+                KroesTerminal.Log.LogInfo("Processing [kroes]...");
+                __result = Utilities.KroesDisplayText();
                 Utilities.OnSubmitEnd(__instance);
                 return false;
             }

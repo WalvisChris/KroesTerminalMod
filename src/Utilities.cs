@@ -13,8 +13,16 @@ namespace KroesTerminal
     {
         public static TextMeshProUGUI QuotaText;
         public static GameObject ship;
+        public static bool reachedQuota = false;
 
         public static int totalShipLoot;
+
+        internal static readonly HashSet<string> nonHostileEnemies = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "docile locust bees",
+            "manticoil",
+            "tulip snake"
+        };
 
         internal static TerminalNode CreateTerminalNode(string name)
         {
@@ -110,6 +118,13 @@ namespace KroesTerminal
             return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items in elevator] {elevatorCount} : ${elevatorTotal}\n\n";
         }
 
+        private static bool ShouldListEnemy(EnemyAI enemy)
+        {
+            if (enemy.isEnemyDead) return false;
+            if (!KroesTerminal.Configuration.EnemyPeaceful && nonHostileEnemies.Contains(enemy.enemyType.enemyName)) return false;
+            return true;
+        }
+
         internal static string KEnemyDisplayText()
         {
             // There are <COUNT> enemies out there.
@@ -120,8 +135,8 @@ namespace KroesTerminal
             string outsideEnemies = "";
 
             EnemyAI[] array = UnityEngine.Object.FindObjectsOfType<EnemyAI>();
-            EnemyAI[] insideEnemiesArray = array.Where(enemy => !enemy.isOutside && !enemy.isEnemyDead).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
-            EnemyAI[] outsideEnemiesArray = array.Where(enemy => enemy.isOutside && !enemy.isEnemyDead).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
+            EnemyAI[] insideEnemiesArray = array.Where(enemy => !enemy.isOutside && ShouldListEnemy(enemy)).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
+            EnemyAI[] outsideEnemiesArray = array.Where(enemy => enemy.isOutside && ShouldListEnemy(enemy)).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
 
             if (insideEnemiesArray.Length == 0 && outsideEnemiesArray.Length == 0) return "\n\n\nNo enemies were found.\n\n";
 
@@ -137,13 +152,13 @@ namespace KroesTerminal
 
             int total = insideEnemiesArray.Length + outsideEnemiesArray.Length;
             string result = $"\n\n\nThere are {total} enemies out there.\n";
-            if (insideEnemiesArray.Length != 0) result += $"[Inside]{insideEnemies}\n";
-            if (outsideEnemiesArray.Length != 0) result += $"[Outside]{outsideEnemies}\n";
+            if (insideEnemiesArray.Length != 0) result += $"\n[Inside]{insideEnemies}\n";
+            if (outsideEnemiesArray.Length != 0) result += $"\n[Outside]{outsideEnemies}\n";
             result += "\n";
             return result;
         }
 
-        internal static int ShipLootTotal()
+        internal static int calculateShipLootTotal()
         {
             List<GrabbableObject> list = (from obj in ship.GetComponentsInChildren<GrabbableObject>()
                                           where obj.itemProperties.isScrap && !(obj is RagdollGrabbableObject)
@@ -157,6 +172,20 @@ namespace KroesTerminal
             if ( text == null) return;
             var handler = text.gameObject.AddComponent<TextJumpAnimation>();
             handler.StartJump(text);
+        }
+
+        internal static string ConfigPermissionDisplayText(string command)
+        {
+            return $"\n\n\n[{command}] is disabled in the mod config file.\n\n";
+        }
+
+        internal static string KroesDisplayText()
+        {
+            string result = "\n\n\nThanks for using KroesTerminal!\n\n";
+            if (KroesTerminal.Configuration.KScan) result += ">KSCAN\nTo see a detailed scan of all scrap.\n\n";
+            if (KroesTerminal.Configuration.KItems) result += ">KITEMS\nTo see a count of all scrap.\n\n";
+            if (KroesTerminal.Configuration.KEnemy) result += ">KENEMY\nTO see a scan of all enemies.\n\n";
+            return result;
         }
     }
 }

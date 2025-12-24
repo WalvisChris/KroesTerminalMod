@@ -1,6 +1,7 @@
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using KroesTerminal.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,19 @@ namespace KroesTerminal
     {
         private const string GUID = "com.kroes.kroesterminal";
         private const string NAME = "KroesTerminal";
-        private const string VERSION = "1.0.4";
+        private const string VERSION = "1.0.5";
 
         internal static ManualLogSource Log;
+        internal static ConfigControl Configuration;
         Harmony harmony = new Harmony(GUID);
 
         private void Awake()
         {
             Log = Logger;
+            Configuration = new ConfigControl(Config);
+            harmony.PatchAll(typeof(TerminalPatch));
+            if (Configuration.enableQuotaUI || Configuration.QuotaNotif) harmony.PatchAll(typeof(HUDManagerPatch));
             Log.LogInfo("Loaded succesfully!");
-            harmony.PatchAll();
         }
     }
 }

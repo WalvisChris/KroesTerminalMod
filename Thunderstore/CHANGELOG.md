@@ -1,3 +1,8 @@
+# 1.0.5  
+- added `kroes` command.  
+- added quota notification.  
+- added config.  
+
 # 1.0.4  
 - added `kenemy` command.  
 - changed `kitems` command.  

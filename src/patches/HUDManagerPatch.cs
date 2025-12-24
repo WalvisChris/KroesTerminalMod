@@ -17,32 +17,36 @@ namespace KroesTerminal.Patches
         [HarmonyPostfix]
         private static void AwakePostfix(HUDManager __instance)
         {
-            GameObject myHotbarUI = new GameObject("myHotbarUI");
-            myHotbarUI.transform.SetParent(__instance.HUDContainer.transform, false);
-            RectTransform myHotbarRect = myHotbarUI.AddComponent<RectTransform>();
-            myHotbarRect.anchorMin = new Vector2(0f, 1f);
-            myHotbarRect.anchorMax = new Vector2(0f, 1f);
-            myHotbarRect.pivot = new Vector2(0f, 1f);
-            myHotbarRect.anchoredPosition = new Vector2(60f, -10f); // POSITION
+            if (KroesTerminal.Configuration.enableQuotaUI)
+            {
+                GameObject myHotbarUI = new GameObject("myHotbarUI");
+                myHotbarUI.transform.SetParent(__instance.HUDContainer.transform, false);
+                RectTransform myHotbarRect = myHotbarUI.AddComponent<RectTransform>();
+                myHotbarRect.anchorMin = new Vector2(0f, 1f);
+                myHotbarRect.anchorMax = new Vector2(0f, 1f);
+                myHotbarRect.pivot = new Vector2(0f, 1f);
+                myHotbarRect.anchoredPosition = new Vector2(60f, -10f); // POSITION
 
-            GameObject quotaTextGO = new GameObject("QuotaText");
-            quotaTextGO.transform.SetParent(myHotbarUI.transform, false);
-            TextMeshProUGUI quotaText = quotaTextGO.AddComponent<TextMeshProUGUI>();
-            RectTransform rect = quotaTextGO.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = new Vector2(50f, 20f); // POSITION
-            rect.sizeDelta = new Vector2(300, 50); // SIZE
-            quotaText.font = __instance.controlTipLines[0].font;
-            quotaText.fontSize = 20;
-            quotaText.fontStyle = FontStyles.Bold;
-            quotaText.text = "-placeholder-";
-            quotaText.color = Color.white;
-            quotaText.alignment = TextAlignmentOptions.Left;
-            quotaText.enableWordWrapping = true;
-            quotaText.overflowMode = TextOverflowModes.Overflow;
-            Utilities.QuotaText = quotaText;
+                GameObject quotaTextGO = new GameObject("QuotaText");
+                quotaTextGO.transform.SetParent(myHotbarUI.transform, false);
+                TextMeshProUGUI quotaText = quotaTextGO.AddComponent<TextMeshProUGUI>();
+                RectTransform rect = quotaTextGO.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(0.5f, 0.5f);
+                rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = new Vector2(50f, 20f); // POSITION
+                rect.sizeDelta = new Vector2(300, 50); // SIZE
+                quotaText.font = __instance.controlTipLines[0].font;
+                quotaText.fontSize = 20;
+                quotaText.fontStyle = FontStyles.Bold;
+                quotaText.text = "-placeholder-";
+                quotaText.color = Color.white;
+                quotaText.alignment = TextAlignmentOptions.Left;
+                quotaText.enableWordWrapping = true;
+                quotaText.overflowMode = TextOverflowModes.Overflow;
+                Utilities.QuotaText = quotaText;
+            }
+
             Utilities.ship = GameObject.Find("/Environment/HangarShip");
         }
 
@@ -50,14 +54,36 @@ namespace KroesTerminal.Patches
         [HarmonyPostfix]
         private static void UpdatePostfix(HUDManager __instance)
         {
+            int currentShipLoot = Utilities.calculateShipLootTotal();
+            int quota = TimeOfDay.Instance.profitQuota;
+
             // [QUOTA] <SHIP TOTAL> : <QUOTA>
-            int currentShipLoot = Utilities.ShipLootTotal();
-            if (currentShipLoot != Utilities.totalShipLoot)
+            if (KroesTerminal.Configuration.enableQuotaUI)
             {
-                Utilities.totalShipLoot = currentShipLoot;
-                Utilities.TriggerJump();
+                if (currentShipLoot != Utilities.totalShipLoot)
+                {
+                    Utilities.totalShipLoot = currentShipLoot;
+                    Utilities.TriggerJump();
+                }
+                Utilities.QuotaText.text = $"[QUOTA] {Utilities.totalShipLoot} : {quota}";
             }
-            Utilities.QuotaText.text = $"[QUOTA] {Utilities.totalShipLoot} : {TimeOfDay.Instance.profitQuota}";
+
+            // NOTIFICATION
+            if (KroesTerminal.Configuration.QuotaNotif)
+            {
+                if (!Utilities.reachedQuota && currentShipLoot >= quota)
+                {
+                    Utilities.reachedQuota = true;
+                    KroesTerminal.Log.LogInfo("sending quota notif...");
+                    __instance.globalNotificationAnimator.SetTrigger("TriggerNotif");
+                    __instance.globalNotificationText.text = "Quota has been reached!";
+                    __instance.UIAudio.PlayOneShot(__instance.globalNotificationSFX);
+                }
+                else if (Utilities.reachedQuota && currentShipLoot < quota)
+                {
+                    Utilities.reachedQuota = false;
+                }
+            }
         }
     }
 }
