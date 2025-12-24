@@ -11,5 +11,5 @@ Extra Terminal commands & UI elements.
 Quota UI:  
 ![quota](Thunderstore/icon.png)  
 Quota reached notification:  
-![notif](media/notif.png)
+![notif](media/notif.png)  
 Mod customization with config file.  
