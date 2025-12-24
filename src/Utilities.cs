@@ -78,11 +78,14 @@ namespace KroesTerminal
         {
             // Items on moon: <COUNT> // $<TOTAL SCRAP VALUE>
             // Items in ship: <COUNT> // $<TOTAL SCRAP VALUE>
+            // Items in elevator: <COUNT> // $<TOTAL SCRAP VALUE>
 
             int moonCount = 0;
             int moonTotal = 0;
             int shipCount = 0;
             int shipTotal = 0;
+            int elevatorCount = 0;
+            int elevatorTotal = 0;
 
             GrabbableObject[] objects = UnityEngine.Object.FindObjectsOfType<GrabbableObject>();
 
@@ -97,10 +100,47 @@ namespace KroesTerminal
                 {
                     moonCount++;
                     moonTotal += obj.scrapValue;
+                } else if (obj.isInElevator)
+                {
+                    moonCount++;
+                    moonTotal += obj.scrapValue;
                 }
             }
 
-            return $"\n\n\nItems on moon: {moonCount} : ${moonTotal}\nItems in ship: {shipCount} : ${shipTotal}\n\n";
+            return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items in elevator] {elevatorCount} : ${elevatorTotal}\n\n";
+        }
+
+        internal static string KEnemyDisplayText()
+        {
+            // There are <COUNT> enemies out there.
+            // <INSIDE LIST>
+            // <OUTSIDE LIST>
+
+            string insideEnemies = "";
+            string outsideEnemies = "";
+
+            EnemyAI[] array = UnityEngine.Object.FindObjectsOfType<EnemyAI>();
+            EnemyAI[] insideEnemiesArray = array.Where(enemy => !enemy.isOutside && !enemy.isEnemyDead).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
+            EnemyAI[] outsideEnemiesArray = array.Where(enemy => enemy.isOutside && !enemy.isEnemyDead).OrderBy(enemy => enemy.enemyType.enemyName).ToArray();
+
+            if (insideEnemiesArray.Length == 0 && outsideEnemiesArray.Length == 0) return "\n\n\nNo enemies were found.\n\n";
+
+            foreach (var enemy in insideEnemiesArray)
+            {
+                insideEnemies += $"\n* {enemy.enemyType.enemyName} : {enemy.enemyHP}HP";
+            }
+
+            foreach (var enemy in outsideEnemiesArray)
+            {
+                outsideEnemies += $"\n* {enemy.enemyType.enemyName} : {enemy.enemyHP}HP";
+            }
+
+            int total = insideEnemiesArray.Length + outsideEnemiesArray.Length;
+            string result = $"\n\n\nThere are {total} enemies out there.\n";
+            if (insideEnemiesArray.Length != 0) result += $"[Inside]{insideEnemies}\n";
+            if (outsideEnemiesArray.Length != 0) result += $"[Outside]{outsideEnemies}\n";
+            result += "\n";
+            return result;
         }
 
         internal static int ShipLootTotal()

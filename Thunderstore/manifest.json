@@ -1,0 +1,9 @@
+{
+    "name": "KroesTerminal",
+    "version_number": "1.0.4",
+    "website_url": "https://github.com/WalvisChris/KroesTerminalMod",
+    "description": "Terminal scanner & UI fixes",
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2304"
+    ]
+}

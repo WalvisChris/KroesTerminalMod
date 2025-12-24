@@ -33,6 +33,12 @@ namespace KroesTerminal.Patches
                 TerminalNode customNode = Utilities.CreateTerminalNode("kitems");
                 __instance.LoadNewNode(customNode);
                 return false;
+            } else if (command == "kenemy")
+            {
+                KroesTerminal.Log.LogInfo("Custom Command: kenemy");
+                TerminalNode customNode = Utilities.CreateTerminalNode("kenemy");
+                __instance.LoadNewNode(customNode);
+                return false;
             }
             return true;
         }
@@ -54,6 +60,12 @@ namespace KroesTerminal.Patches
             {
                 KroesTerminal.Log.LogInfo("Processing [kitems]...");
                 __result = Utilities.KItemsDisplayText();
+                Utilities.OnSubmitEnd(__instance);
+                return false;
+            } else if (keyword.Contains("[kenemy"))
+            {
+                KroesTerminal.Log.LogInfo("Processing [kenemy]...");
+                __result = Utilities.KEnemyDisplayText();
                 Utilities.OnSubmitEnd(__instance);
                 return false;
             }
