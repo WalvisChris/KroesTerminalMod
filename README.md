@@ -8,3 +8,4 @@ Extra Terminal commands & UI elements.
 
 # Extra features
 Quota UI  
+![quota](Thunderstore/icon.png)
