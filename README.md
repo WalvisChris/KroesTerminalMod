@@ -8,7 +8,8 @@ Extra Terminal commands & UI elements.
 `kenemy`: scan inside and outside enemies.  
 
 # Extra features
-Quota UI  
-![quota](Thunderstore/icon.png)
-Quota reached notification  
+Quota UI:  
+![quota](Thunderstore/icon.png)  
+Quota reached notification:  
+![notif](media/notif.png)
 Mod customization with config file.  
