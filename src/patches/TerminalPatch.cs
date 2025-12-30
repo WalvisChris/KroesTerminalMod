@@ -49,6 +49,13 @@ namespace KroesTerminal.Patches
                 __instance.LoadNewNode(customNode);
                 return false;
             }
+            else if (command == "kplayers")
+            {
+                KroesPlugin.Log.LogInfo("Custom Command: kplayers");
+                TerminalNode customNode = Utilities.CreateTerminalNode("kplayers");
+                __instance.LoadNewNode(customNode);
+                return false;
+            }
             return true;
         }
 
@@ -111,6 +118,20 @@ namespace KroesTerminal.Patches
             {
                 KroesPlugin.Log.LogInfo("Processing [kroes]...");
                 __result = Utilities.KroesDisplayText();
+                Utilities.OnSubmitEnd(__instance);
+                return false;
+            }
+            else if (keyword.Contains("[kplayers]"))
+            {
+                if (!KroesPlugin.Configuration.KPlayers)
+                {
+                    KroesPlugin.Log.LogInfo("[kplayers] not permitted.");
+                    __result = Utilities.ConfigPermissionDisplayText("kplayers");
+                    Utilities.OnSubmitEnd(__instance);
+                    return false;
+                }
+                KroesPlugin.Log.LogInfo("Processing [kplayers]...");
+                __result = Utilities.PlayersDisplayText();
                 Utilities.OnSubmitEnd(__instance);
                 return false;
             }

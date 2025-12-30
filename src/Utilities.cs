@@ -1,6 +1,8 @@
+using GameNetcodeStuff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
@@ -60,6 +62,13 @@ namespace KroesTerminal
             terminal.screenText.Select();
         }
 
+        internal static bool ShouldListItem(GrabbableObject item)
+        {
+            if (!item.itemProperties.isScrap) return false;
+            if (item is StunGrenadeItem egg) return !egg.hasExploded;
+            return true;
+        }
+
         internal static string KScanDisplayText()
         {
             // There are <COUNT> objects outside the ship, totalling a value of $<TOTAL SCRAP VALUE>
@@ -69,7 +78,7 @@ namespace KroesTerminal
             int total = 0;
 
             GrabbableObject[] array = UnityEngine.Object.FindObjectsOfType<GrabbableObject>();
-            GrabbableObject[] sortedArray = array.Where(obj => obj.itemProperties.isScrap && !obj.isInShipRoom && !obj.isInElevator).OrderBy(obj => obj.itemProperties.itemName).ToArray();
+            GrabbableObject[] sortedArray = array.Where(obj => ShouldListItem(obj) && !obj.isInShipRoom && !obj.isInElevator).OrderBy(obj => obj.itemProperties.itemName).ToArray();
 
             if (sortedArray.Length == 0) return "\n\n\nNo objects were found.\n\n";
 
@@ -94,30 +103,37 @@ namespace KroesTerminal
             int shipTotal = 0;
             int elevatorCount = 0;
             int elevatorTotal = 0;
+            int heldCount = 0;
+            int heldTotal = 0;
 
             GrabbableObject[] objects = UnityEngine.Object.FindObjectsOfType<GrabbableObject>();
 
             foreach (GrabbableObject obj in objects)
             {
-                if (!obj.itemProperties.isScrap) continue;
-                if (obj.isInShipRoom)
+                if (!ShouldListItem(obj)) continue;
+                if (obj.isInShipRoom) 
                 {
                     shipCount++;
                     shipTotal += obj.scrapValue;
                 }
-                else if (!obj.isInElevator)
-                {
-                    moonCount++;
-                    moonTotal += obj.scrapValue;
+                else if (obj.isHeld)
+                { 
+                    heldCount++;
+                    heldTotal += obj.scrapValue; 
                 }
                 else if (obj.isInElevator)
+                { 
+                    elevatorCount++;
+                    elevatorTotal += obj.scrapValue;
+                }
+                else
                 {
                     moonCount++;
                     moonTotal += obj.scrapValue;
                 }
             }
 
-            return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items in elevator] {elevatorCount} : ${elevatorTotal}\n\n";
+            return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items being held] {heldCount} : ${heldTotal}\n[Items in elevator] {elevatorCount} : ${elevatorTotal}\n\n";
         }
 
         private static bool ShouldListEnemy(EnemyAI enemy)
@@ -186,7 +202,32 @@ namespace KroesTerminal
             string result = "\n\n\nThanks for using KroesTerminal!\n\n";
             if (KroesPlugin.Configuration.KScan) result += ">KSCAN\nTo see a detailed scan of all scrap.\n\n";
             if (KroesPlugin.Configuration.KItems) result += ">KITEMS\nTo see a count of all scrap.\n\n";
-            if (KroesPlugin.Configuration.KEnemy) result += ">KENEMY\nTO see a scan of all enemies.\n\n";
+            if (KroesPlugin.Configuration.KEnemy) result += ">KENEMY\nTo see a scan of all enemies.\n\n";
+            if (KroesPlugin.Configuration.KPlayers) result += ">KPLAYERS\nTo see a list of all player items.\n\n";
+            return result;
+        }
+
+        internal static string PlayersDisplayText()
+        {
+            PlayerControllerB[] list = StartOfRound.Instance.allPlayerScripts;
+            PlayerControllerB[] players = list.Where(player => player.isPlayerControlled && !player.isPlayerDead).ToArray();
+            int playerCount = players.Length;
+            
+            string result = $"\n\n\nThere are {playerCount} players alive:\n";
+            
+            foreach (PlayerControllerB script in players)
+            {
+                result += $"\n[{script.playerUsername}]\n";
+
+                GrabbableObject[] items = script.ItemSlots;
+
+                foreach (GrabbableObject item in items)
+                {
+                    if (item != null) result += $"\n- {item.itemProperties.itemName}";
+                }
+            }
+
+            result += "\n";
             return result;
         }
     }

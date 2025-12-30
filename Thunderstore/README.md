@@ -1,4 +1,4 @@
-# KroesTerminal v1.0.5  
+# KroesTerminal v1.0.7  
 Extra Terminal commands & UI elements.   
 
 # Custom Terminal Commands  
@@ -6,6 +6,7 @@ Extra Terminal commands & UI elements.
 `kscan`: detailed moon scrap scan.  
 `kitems`: scan items on moon, in ship and in elevators.  
 `kenemy`: scan inside and outside enemies.  
+`kplayers`: scan player items.  
 
 # Extra features
 Quota UI.  

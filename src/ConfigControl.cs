@@ -20,6 +20,7 @@ namespace KroesTerminal
 		private ConfigEntry<bool> KEnemyCfg;
 
 		private ConfigEntry<bool> KEnemyPeacefulCfg;
+		private ConfigEntry<bool> KPlayersCfg;
 
 		internal bool enableQuotaUI { get => QuotaUICfg.Value; set => QuotaUICfg.Value = value; }
 
@@ -31,8 +32,9 @@ namespace KroesTerminal
 		internal bool KEnemy { get => KEnemyCfg.Value; set => KEnemyCfg.Value = value; }
 
 		internal bool EnemyPeaceful { get => KEnemyPeacefulCfg.Value; set => KEnemyPeacefulCfg.Value = value; }
+		internal bool KPlayers { get => KPlayersCfg.Value; set => KPlayersCfg.Value = value; }
 
-		public ConfigControl(ConfigFile config)
+        public ConfigControl(ConfigFile config)
 		{
 			QuotaUICfg = config.Bind<bool>("Features", "Enable Quota UI", true);
 			QuotaNotifCfg = config.Bind<bool>("Features", "Enable Quota notification", true);
@@ -40,6 +42,7 @@ namespace KroesTerminal
 			KItemsCfg = config.Bind<bool>("Terminal Commands", "Allow KITEMS command", true);
 			KEnemyCfg = config.Bind<bool>("Terminal Commands", "Allow KENEMY command", true);
 			KEnemyPeacefulCfg = config.Bind<bool>("Terminal Commands", "List non-hostile enemies", true);
-		}
+			KPlayersCfg = config.Bind<bool>("Terminal Commands", "Allow KPLAYERS command", true);
+        }
     }
 }
