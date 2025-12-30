@@ -1,4 +1,4 @@
-# KroesTerminal v1.0.7  
+# KroesTerminal v1.0.8  
 Extra Terminal commands & UI elements.   
 
 # Custom Terminal Commands  

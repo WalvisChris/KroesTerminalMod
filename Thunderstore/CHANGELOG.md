@@ -1,5 +1,10 @@
+# 1.0.8  
+- fixed enemy display names.  
+- changed `kitems` display text.  
+
 # 1.0.7  
 - added `kplayers` command.  
+- added [Items in elevator] to `kitems`.    
 
 # 1.0.6  
 - potential fix for exploded easter eggs showing up for `kscan`.  
@@ -27,3 +32,4 @@
 
 # 1.0.0  
 - This is the initial version.  
+- `kscan` and `kitems` command.  

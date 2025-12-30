@@ -133,7 +133,7 @@ namespace KroesTerminal
                 }
             }
 
-            return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items being held] {heldCount} : ${heldTotal}\n[Items in elevator] {elevatorCount} : ${elevatorTotal}\n\n";
+            return $"\n\n\n[Items on moon] {moonCount} : ${moonTotal}\n[Items in ship] {shipCount} : ${shipTotal}\n[Items being held] {heldCount} : ${heldTotal}\n[Items on elevator/ship edge] {elevatorCount} : ${elevatorTotal}\n\n";
         }
 
         private static bool ShouldListEnemy(EnemyAI enemy)
@@ -160,12 +160,16 @@ namespace KroesTerminal
 
             foreach (var enemy in insideEnemiesArray)
             {
-                insideEnemies += $"\n* {enemy.enemyType.enemyName} : {enemy.enemyHP}HP";
+                var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
+                string name = scanNode?.headerText;
+                insideEnemies += $"\n* {name} : {enemy.enemyHP}HP";
             }
 
             foreach (var enemy in outsideEnemiesArray)
             {
-                outsideEnemies += $"\n* {enemy.enemyType.enemyName} : {enemy.enemyHP}HP";
+                var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
+                string name = scanNode?.headerText;
+                outsideEnemies += $"\n* {name} : {enemy.enemyHP}HP";
             }
 
             int total = insideEnemiesArray.Length + outsideEnemiesArray.Length;
