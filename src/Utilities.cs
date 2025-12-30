@@ -97,18 +97,20 @@ namespace KroesTerminal
 
             GrabbableObject[] objects = UnityEngine.Object.FindObjectsOfType<GrabbableObject>();
 
-            foreach(GrabbableObject obj in objects)
+            foreach (GrabbableObject obj in objects)
             {
                 if (!obj.itemProperties.isScrap) continue;
                 if (obj.isInShipRoom)
                 {
                     shipCount++;
                     shipTotal += obj.scrapValue;
-                } else if (!obj.isInElevator)
+                }
+                else if (!obj.isInElevator)
                 {
                     moonCount++;
                     moonTotal += obj.scrapValue;
-                } else if (obj.isInElevator)
+                }
+                else if (obj.isInElevator)
                 {
                     moonCount++;
                     moonTotal += obj.scrapValue;
@@ -121,7 +123,7 @@ namespace KroesTerminal
         private static bool ShouldListEnemy(EnemyAI enemy)
         {
             if (enemy.isEnemyDead) return false;
-            if (!KroesTerminal.Configuration.EnemyPeaceful && nonHostileEnemies.Contains(enemy.enemyType.enemyName)) return false;
+            if (!KroesPlugin.Configuration.EnemyPeaceful && nonHostileEnemies.Contains(enemy.enemyType.enemyName)) return false;
             return true;
         }
 
@@ -169,7 +171,7 @@ namespace KroesTerminal
         public static void TriggerJump()
         {
             var text = QuotaText;
-            if ( text == null) return;
+            if (text == null) return;
             var handler = text.gameObject.AddComponent<TextJumpAnimation>();
             handler.StartJump(text);
         }
@@ -182,9 +184,9 @@ namespace KroesTerminal
         internal static string KroesDisplayText()
         {
             string result = "\n\n\nThanks for using KroesTerminal!\n\n";
-            if (KroesTerminal.Configuration.KScan) result += ">KSCAN\nTo see a detailed scan of all scrap.\n\n";
-            if (KroesTerminal.Configuration.KItems) result += ">KITEMS\nTo see a count of all scrap.\n\n";
-            if (KroesTerminal.Configuration.KEnemy) result += ">KENEMY\nTO see a scan of all enemies.\n\n";
+            if (KroesPlugin.Configuration.KScan) result += ">KSCAN\nTo see a detailed scan of all scrap.\n\n";
+            if (KroesPlugin.Configuration.KItems) result += ">KITEMS\nTo see a count of all scrap.\n\n";
+            if (KroesPlugin.Configuration.KEnemy) result += ">KENEMY\nTO see a scan of all enemies.\n\n";
             return result;
         }
     }

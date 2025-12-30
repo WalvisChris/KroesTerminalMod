@@ -17,7 +17,7 @@ namespace KroesTerminal.Patches
         [HarmonyPostfix]
         private static void AwakePostfix(HUDManager __instance)
         {
-            if (KroesTerminal.Configuration.enableQuotaUI)
+            if (KroesPlugin.Configuration.enableQuotaUI)
             {
                 GameObject myHotbarUI = new GameObject("myHotbarUI");
                 myHotbarUI.transform.SetParent(__instance.HUDContainer.transform, false);
@@ -58,7 +58,7 @@ namespace KroesTerminal.Patches
             int quota = TimeOfDay.Instance.profitQuota;
 
             // [QUOTA] <SHIP TOTAL> : <QUOTA>
-            if (KroesTerminal.Configuration.enableQuotaUI)
+            if (KroesPlugin.Configuration.enableQuotaUI)
             {
                 if (currentShipLoot != Utilities.totalShipLoot)
                 {
@@ -69,12 +69,12 @@ namespace KroesTerminal.Patches
             }
 
             // NOTIFICATION
-            if (KroesTerminal.Configuration.QuotaNotif)
+            if (KroesPlugin.Configuration.QuotaNotif)
             {
                 if (!Utilities.reachedQuota && currentShipLoot >= quota)
                 {
                     Utilities.reachedQuota = true;
-                    KroesTerminal.Log.LogInfo("sending quota notif...");
+                    KroesPlugin.Log.LogInfo("sending quota notif...");
                     __instance.globalNotificationAnimator.SetTrigger("TriggerNotif");
                     __instance.globalNotificationText.text = "Quota has been reached!";
                     __instance.UIAudio.PlayOneShot(__instance.globalNotificationSFX);

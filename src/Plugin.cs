@@ -1,6 +1,7 @@
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using KroesTerminal;
 using KroesTerminal.Patches;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using UnityEngine;
 namespace KroesTerminal
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    public class KroesTerminal : BaseUnityPlugin
+    public class KroesPlugin : BaseUnityPlugin
     {
         private const string GUID = "com.kroes.kroesterminal";
         private const string NAME = "KroesTerminal";
