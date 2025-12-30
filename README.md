@@ -1,4 +1,4 @@
-# KroesTerminal v1.0.7  
+# KroesTerminal v1.0.7 
 Extra Terminal commands & UI elements.   
 
 # Custom Terminal Commands  
@@ -9,6 +9,8 @@ Extra Terminal commands & UI elements.
 `kplayers`: scan player items.  
 
 # Extra features
-Quota UI.  
-Quota reached notification.  
+Quota UI:  
+![quota](Thunderstore/icon.png)  
+Quota reached notification:  
+![notif](media/notif.png)  
 Mod customization with config file.  
