@@ -1,5 +1,6 @@
-# KroesTerminal v1.0.8 
-Extra Terminal commands & UI elements.   
+# KroesTerminal v1.0.9  
+Extra Terminal commands & UI elements.  
+![icon](Thunderstore/icon.png)  
 
 # Custom Terminal Commands  
 `kroes`: list all custom commands.  

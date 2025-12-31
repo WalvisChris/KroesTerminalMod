@@ -160,15 +160,35 @@ namespace KroesTerminal
 
             foreach (var enemy in insideEnemiesArray)
             {
-                var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
-                string name = scanNode?.headerText;
+                string name = "???";
+
+                if (enemy is DressGirlAI ghost)
+                {
+                    name = ghost.name;
+                } 
+                else
+                {
+                    var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
+                    name = scanNode?.headerText;
+                }
+
                 insideEnemies += $"\n* {name} : {enemy.enemyHP}HP";
             }
 
             foreach (var enemy in outsideEnemiesArray)
             {
-                var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
-                string name = scanNode?.headerText;
+                string name = "???";
+
+                if (enemy is DressGirlAI ghost)
+                {
+                    name = ghost.name;
+                }
+                else
+                {
+                    var scanNode = enemy.enemyType.enemyPrefab.GetComponentInChildren<ScanNodeProperties>();
+                    name = scanNode?.headerText;
+                }
+
                 outsideEnemies += $"\n* {name} : {enemy.enemyHP}HP";
             }
 
@@ -227,7 +247,7 @@ namespace KroesTerminal
 
                 foreach (GrabbableObject item in items)
                 {
-                    if (item != null) result += $"\n- {item.itemProperties.itemName}";
+                    if (item != null) result += $"- {item.itemProperties.itemName}\n";
                 }
             }
 

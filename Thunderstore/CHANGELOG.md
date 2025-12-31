@@ -1,3 +1,7 @@
+# 1.0.9  
+- fixed `kplayers` display text.  
+- potential fix for ghost girl name with `kenemy`.  
+
 # 1.0.8  
 - fixed enemy display names.  
 - changed `kitems` display text.  

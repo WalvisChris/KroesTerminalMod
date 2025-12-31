@@ -17,7 +17,7 @@ namespace KroesTerminal
     {
         private const string GUID = "com.kroes.kroesterminal";
         private const string NAME = "KroesTerminal";
-        private const string VERSION = "1.0.8";
+        private const string VERSION = "1.0.9";
 
         internal static ManualLogSource Log;
         internal static ConfigControl Configuration;
